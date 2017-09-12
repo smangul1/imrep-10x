@@ -156,22 +156,24 @@ file=open(args.out+"_raw.txt","w")
 
 for key, value in dict_barcode_TRA.iteritems():
     if len(value)>0:
-        file.write("TCRA,"+key +","+str(len(set(value))) )
-        file.write("\n")
+        for s in set(value):
+            file.write(base2 +","+"TCRA,"+key +","+s+","+str(len(set(value))) )
+            file.write("\n")
         nCDR3_TRA.append(len(set(value)))
 
 
 for key, value in dict_barcode_TRB.iteritems():
     if len(value)>0:
-        file.write("TCRB,"+key +","+str(len(set(value))) )
+        for s in set(value):
+            file.write(base2 +","+"TCRB,"+key +","+s+","+str(len(set(value))) )
+            file.write("\n")
         nCDR3_TRB.append(len(set(value)))
-        file.write("\n")
 
 file.close()
 
 #TRA
 file=open(args.out+"_TCR_summary.txt","w")
-file.write("Sample, total_barcodes, intersection, union,  Total_TRA, TRA_1, TRA_2, TRA>=2,Total_TRB, TRB_1, TRB_2, TRB>=2")
+file.write("Sample, total_barcodes, intersection, union,  Total_TRA, TRA_1, TRA_2, TRA>=2,Total_TRB, TRB_1, TRB_2, TRB>=2, Number of reads with full barcode, Number of reads with full barcode mathing, Number of reads with not-full barcode, Number of reads with not-full barcode mathing")
 file.write("\n")
 total_barcodes=len(barcodesSet)
 Total_TRA=len(nCDR3_TRA)
@@ -192,7 +194,10 @@ union=len( set_barcode_TRA | set_barcode_TRB)
 
 
 TRA_gt2=len(nCDR3_TRA) - nCDR3_TRA.count(1) -nCDR3_TRA.count(2)
-file.write(base2 +"," + str(total_barcodes) +  "," + str(intersection) + "," + str(union) + "," + str(Total_TRA) + "," + str(TRA_1) + "," + str(TRA_2) + "," + str(TRA_gt2)+ "," + str(Total_TRB) + "," + str(TRB_1) + "," + str(TRB_2) + "," + str(TRB_gt2))
+
+
+
+file.write(base2 +"," + str(total_barcodes) +  "," + str(intersection) + "," + str(union) + "," + str(Total_TRA) + "," + str(TRA_1) + "," + str(TRA_2) + "," + str(TRA_gt2)+ "," + str(Total_TRB) + "," + str(TRB_1) + "," + str(TRB_2) + "," + str(TRB_gt2)+","+str(k_full)+","+str(k_full_match)+","+str(k_N)+","+str(k_N_match))
 file.write("\n")
 
 
