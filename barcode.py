@@ -60,8 +60,8 @@ next(csv_f, None)  # skip the headers
 
 for row in csv_f:
     read=row[0]
+    cdr3=row[1]
     if row[2]=="TRA":
-        cdr3=row[1]
         dict_reads_CDR3_TRA[read]=cdr3
         reads_TRA.add(read)
     elif row[2]=="TRB":
