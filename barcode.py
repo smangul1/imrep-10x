@@ -12,8 +12,8 @@ from Levenshtein import distance
 
 #Assumes all barcodes in dict_reads_CDR3_TRA mathed R2
 #Given dict_reads_CDR3_TRA match to corresponding CDR3s
-def check_read_TCR(dict_read_barcode, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, dict_barcode_TRA,dict_barcode_TRB,raw_file,flag):
-
+def check_read_TCR(dict_read_barcode, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, dict_barcode_TRA_local,dict_barcode_TRB_local,raw_file,flag):
+    k=0
 
     reads_TRA=dict_reads_CDR3_TRA.keys()
     reads_TRB=dict_reads_CDR3_TRB.keys()
@@ -31,21 +31,24 @@ def check_read_TCR(dict_read_barcode, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, 
         barcode=value
         if read in reads_TRA:
             if read in dict_reads_CDR3_TRA.keys():
+                k+=1
                 cdr3=dict_reads_CDR3_TRA[read]
-                dict_barcode_TRA[barcode].append(cdr3)
+                dict_barcode_TRA_local[barcode].append(cdr3)
                 file.write("TRA,"+str(barcode)+","+str(read)+","+str(cdr3)+","+str(flag))
                 file.write("\n")
         
      
         elif read in reads_TRB:
             if read in dict_reads_CDR3_TRB.keys():
+                k+=1
                 cdr3=dict_reads_CDR3_TRB[read]
-                dict_barcode_TRB[barcode].append(cdr3)
+                dict_barcode_TRB_local[barcode].append(cdr3)
                 file.write("TRB,"+str(barcode)+","+str(read)+","+str(cdr3)+","+str(flag))
                 file.write("\n")
-
+        
 
     file.close()
+    return k
 
 
 
@@ -187,15 +190,26 @@ dict_read_barcode={}
 
 dict_barcode_TRA={}
 dict_barcode_TRB={}
+dict_barcode_ed1_TRA={}
+dict_barcode_ed1_TRB={}
 dict_barcode2_TRA={}
 dict_barcode2_TRB={}
+dict_barcode2_ed1_TRA={}
+dict_barcode2_ed1_TRB={}
 
 
 for b in bSet:
+    
     dict_barcode_TRA[b]=[]
     dict_barcode_TRB[b]=[]
+    dict_barcode_ed1_TRA[b]=[]
+    dict_barcode_ed1_TRB[b]=[]
     dict_barcode2_TRA[b]=[]
     dict_barcode2_TRB[b]=[]
+    dict_barcode2_ed1_TRA[b]=[]
+    dict_barcode2_ed1_TRB[b]=[]
+    
+
 
 
 
@@ -207,11 +221,14 @@ dict_read_barcode2_ed1={}
 
 readsSet=set()
 
+
+
 with open(args.f2, "rU") as handle:
     for record in SeqIO.parse(handle, "fastq") :
         barcode=str(record.seq)
         read=str(record.id)
         readsSet.add(read)
+        
         
         
         
@@ -237,18 +254,40 @@ with open(args.f2, "rU") as handle:
 
 
 
+# After we identify to which barcode belong each read, we take those one which have CDR3
 
+k1=0
+k2=0
+k3=0
+k4=0
 
-check_read_TCR(dict_read_barcode, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, dict_barcode_TRA,dict_barcode_TRB,fileraw1,0)
-check_read_TCR(dict_read_barcode_ed1, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, dict_barcode_TRA,dict_barcode_TRB,fileraw2,1)
-check_read_TCR(dict_read_barcode2, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, dict_barcode_TRA,dict_barcode_TRB,fileraw3,2)
-check_read_TCR(dict_read_barcode2_ed1, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, dict_barcode_TRA,dict_barcode_TRB,fileraw4,3)
+k1=check_read_TCR(dict_read_barcode, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, dict_barcode_TRA,dict_barcode_TRB,fileraw1,0)
+k2=check_read_TCR(dict_read_barcode_ed1, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, dict_barcode_ed1_TRA,dict_barcode_ed1_TRB,fileraw2,1)
+k3=check_read_TCR(dict_read_barcode2, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, dict_barcode2_TRA,dict_barcode2_TRB,fileraw3,2)
+k4=check_read_TCR(dict_read_barcode2_ed1, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, dict_barcode2_ed1_TRA,dict_barcode2_ed1_TRB,fileraw4,3)
 
 print len(readsSet),len(dict_read_barcode)+len(dict_read_barcode_ed1)+ len(dict_read_barcode2)+len(dict_read_barcode2_ed1)
 print len(dict_read_barcode),len(dict_read_barcode_ed1), len(dict_read_barcode2),len(dict_read_barcode2_ed1)
 
+print "-----"
+
+print len(dict_read_barcode),k1
+print len(dict_read_barcode_ed1),k2
+print len(dict_read_barcode2), k3
+print len(dict_read_barcode2_ed1), k4
 
 
+file=open(args.out+".log","w")
+
+file.write("Total reads, Reads with matchng barcodes full ed=0,Reads with matchng barcodes full ed=1, Reads with matchng barcodes non-full ed=0,Reads with matchng barcodes non-full ed=1,Reads with matchng barcodes full ed=0 TCR,Reads with matchng barcodes full ed=1 TCR, Reads with matchng barcodes non-full ed=0 TCR,Reads with matchng barcodes non-full ed=1 TCR")
+file.write("\n")
+
+
+file.write(str(len(readsSet))+","+str(len(dict_read_barcode))+","+str(len(dict_read_barcode_ed1))+","+str(len(dict_read_barcode2))+","+str(len(dict_read_barcode2_ed1))+","+str(k1)+","+str(k2)+","+str(k3)+","+str(k4)   )
+
+
+
+file.close()
 
 
 
