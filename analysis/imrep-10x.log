@@ -1,4 +1,4 @@
-sample,Total
+sample,Total reads, Reads with matchng barcodes full ed=0,Reads with matchng barcodes full ed=1, Reads with matchng barcodes non-full ed=0,Reads with matchng barcodes non-full ed=1,Reads with matchng barcodes full ed=0 TCR,Reads with matchng barcodes full ed=1 TCR, Reads with matchng barcodes non-full ed=0 TCR,Reads with matchng barcodes non-full ed=1 TCR
 03T3_S48_L001,6451,2608,64,3099,78,666,22,938,34
 03T4_S39_L001,44901,17625,499,22298,676,6484,199,9791,365
 03T8_S37_L001,16322,6425,156,8009,235,1950,50,3050,108
