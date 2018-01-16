@@ -18,7 +18,7 @@ def check_read_TCR(dict_read_barcode, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, 
     reads_TRA=dict_reads_CDR3_TRA.keys()
     reads_TRB=dict_reads_CDR3_TRB.keys()
     
-    print len(reads_TRA), len(reads_TRB)
+    print (len(reads_TRA), len(reads_TRB))
 
     file=open(raw_file,"w")
     
@@ -26,7 +26,7 @@ def check_read_TCR(dict_read_barcode, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, 
     file.write("chain,barcode,read,cdr3,flag")
     file.write("\n")
 
-    for key, value in dict_read_barcode.iteritems():
+    for key, value in dict_read_barcode.items():
         read=key
         barcode=value
         if read in reads_TRA:
@@ -62,7 +62,7 @@ def search_ed_1 (set_barcodes, cdr3_barcode):
             if distance(str(s),str(cdr3_barcode))==1:
                 match.append(s)
         else:
-            print "Warning : length is different",s,cdr3_barcode
+            print ("Warning : length is different",s,cdr3_barcode)
 
 
 
@@ -75,10 +75,10 @@ def search_ed_1 (set_barcodes, cdr3_barcode):
 #=========================
 
 ap = argparse.ArgumentParser()
-ap.add_argument('barcodes', help='Mapped reads in bam format')
-ap.add_argument('f2', help='R2 file')
-ap.add_argument('imrep_file', help='Mapped reads in bam format')
-ap.add_argument('out', help='Mapped reads in bam format')
+ap.add_argument('barcodes', help='File with database of barcodes. One barcode per line')
+ap.add_argument('f2', help='fastq file. R2 file with actual barcodes')
+ap.add_argument('imrep_file', help='file obtained with imrep with extended output settings')
+ap.add_argument('out', help='Prefix for output')
 
 
 args = ap.parse_args()
@@ -106,7 +106,7 @@ for row in csv_f:
 
 
 
-print "Number of barcodes", len(bSet), len(bSet2)
+print ("Number of barcodes", len(bSet), len(bSet2))
 k_full=0
 k_full_match=0
 k_full_match_ed1=0
@@ -168,8 +168,8 @@ for row in csv_f:
 
 
 
-print "Number of TRA reads", len(reads_TRA), len(setCDR3_TRA),sum(dict_cdr3_nReads_TRA.values())
-print "Number of TRB reads", len(reads_TRB), len(setCDR3_TRB), sum(dict_cdr3_nReads_TRB.values())
+print ("Number of TRA reads", len(reads_TRA), len(setCDR3_TRA),sum(dict_cdr3_nReads_TRA.values()))
+print ("Number of TRB reads", len(reads_TRB), len(setCDR3_TRB), sum(dict_cdr3_nReads_TRB.values()))
 
 
 
@@ -179,7 +179,7 @@ print "Number of TRB reads", len(reads_TRB), len(setCDR3_TRB), sum(dict_cdr3_nRe
 
 
 
-print "Group CDR3s by barcodes ..."
+print ("Group CDR3s by barcodes ...")
 
 fileraw1=args.out+"_raw_barcode.txt"
 fileraw2=args.out+"_raw_barcode_ed1.txt"
@@ -266,15 +266,15 @@ k2=check_read_TCR(dict_read_barcode_ed1, dict_reads_CDR3_TRA, dict_reads_CDR3_TR
 k3=check_read_TCR(dict_read_barcode2, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, dict_barcode2_TRA,dict_barcode2_TRB,fileraw3,2)
 k4=check_read_TCR(dict_read_barcode2_ed1, dict_reads_CDR3_TRA, dict_reads_CDR3_TRB, dict_barcode2_ed1_TRA,dict_barcode2_ed1_TRB,fileraw4,3)
 
-print len(readsSet),len(dict_read_barcode)+len(dict_read_barcode_ed1)+ len(dict_read_barcode2)+len(dict_read_barcode2_ed1)
-print len(dict_read_barcode),len(dict_read_barcode_ed1), len(dict_read_barcode2),len(dict_read_barcode2_ed1)
+print (len(readsSet),len(dict_read_barcode)+len(dict_read_barcode_ed1)+ len(dict_read_barcode2)+len(dict_read_barcode2_ed1))
+print (len(dict_read_barcode),len(dict_read_barcode_ed1), len(dict_read_barcode2),len(dict_read_barcode2_ed1))
 
-print "-----"
+print ("-----")
 
-print len(dict_read_barcode),k1
-print len(dict_read_barcode_ed1),k2
-print len(dict_read_barcode2), k3
-print len(dict_read_barcode2_ed1), k4
+print (len(dict_read_barcode),k1)
+print (len(dict_read_barcode_ed1),k2)
+print (len(dict_read_barcode2), k3)
+print (len(dict_read_barcode2_ed1), k4)
 
 
 file=open(args.out+".log","w")
